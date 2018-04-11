@@ -33,7 +33,11 @@ SRC = THRSTrans.C
 HEAD = $(SRC:.C=.h) 
 OBJS = $(SRC:.C=.o)
 
-all: libhrstrans.so 
+all: xopt libhrstrans.so 
+
+xopt: $(OBJS) $(HEAD) hrstrans_optim.C
+	rm -f $@
+	$(LD) $(CXXFLAGS) -o $@ hrstrans_optim.C $(OBJS) $(ALL_LIBS)
 
 libhrstrans.so: $(OBJS) $(HEAD)
 	$(CXX) $(SOFLAGS) -O -o libhrstrans.so $(OBJS) $(ALL_LIBS)
