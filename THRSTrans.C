@@ -18,7 +18,7 @@ THRSTrans::THRSTrans(double bq1, double bq2, double bq3, double k1, double k2, t
     Bq1(bq1),Bq2(bq2),Bq3(bq3), K1(k1), K2(k2),fTune(tune), ntrk(nt) {
         TH1::AddDirectory(kFALSE);
         int i,j;
-
+        init5by5=0;
 
 
         double q_l[3] = {0.941, 1.826, 1.827};
@@ -296,6 +296,7 @@ THRSTrans::THRSTrans(double bq1, double bq2, double bq3, double k1, double k2, t
 
 THRSTrans::~THRSTrans(){
     int i,j;
+    init5by5=0;
     for( i = 0; i < 5; i++ ){
         for( j = 0; j < nelm+1; j++ ){
             delete hacc[i][0][j];
@@ -1082,7 +1083,25 @@ TMatrixD *THRSTrans::makedip( double theta, double rho, double n, double beta1, 
     return m;
 }
 
-
+Float_t THRSTrans::GetMatrElem(Int_t i, Int_t j) {
+  // return elements of 5x5 matrix
+  if (i < 0 || i >= 5) return 0;
+  if (j < 0 || j >= 5) return 0;
+  static int debug=1;
+  int map[5] = {kX, kTh, kY, kPh, kd };
+  if (init5by5==0) {
+    Int_t k,m;
+    trans5by5 = new TMatrixD(5,5);
+    for( k = 0; k < 5; k++ ){
+      for( m = 0; m < 5; m++ ){
+         (*trans5by5)[k][m] = (*trans[nelm])[map[k]][map[m]];
+      }
+    }
+    if(debug) cout << "initialized trans5by5"<<endl;
+    init5by5=1;
+  }
+  return (*trans5by5)[i][j];
+}
 
 void THRSTrans::PrintSimple(TMatrixD *m, double l){
     int i, j;

@@ -27,6 +27,8 @@ class THRSTrans {
     void ShowAcc();
     void fillvector(TVectorD &);
 
+    Float_t GetMatrElem(Int_t i, Int_t j);
+
     TMatrixD *GetTransport(){ return trans[nelm]; }
     TMatrixD *GetTransport(int i){ return trans[i]; }
     TMatrixD *GetTransport(int i, int j);
@@ -48,6 +50,7 @@ class THRSTrans {
         double Bq1, Bq2, Bq3,K1, K2;
         double sept_K1, sept_K2;
         TMatrixD *trans[20], *chain[20];
+        TMatrixD *trans5by5;
 
         int nelm;
 
@@ -78,6 +81,8 @@ class THRSTrans {
         int ntrk;
         double ytg[100000], xtg[100000], thtg[100000], phtg[100000], dp[100000];
         bool acc[100000];
+
+        int init5by5;
 
         void setcrossterms(TMatrixD *);
 
